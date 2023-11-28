@@ -1,6 +1,6 @@
 {
   "name": "vuelit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "List vie Vue's reactivity system",
   "author": "Matthias Hryniszak <padcom@gmail.com>",
   "license": "Apache-2.0",
