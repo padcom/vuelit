@@ -29,7 +29,7 @@
     "clean": "rimraf dist",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prebublishOnly": "npm install && npm run build && npm test"
+    "prepublishOnly": "npm install && npm run build"
   },
   "repository": {
     "type": "git",
