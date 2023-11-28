@@ -20,7 +20,7 @@ The main differences in this implementation are:
 Vuelit uses the [from-github](https://npmjs.org/package/create-from-github) generator which just clones the given repository and clears it out to a point where it is usable as a new project:
 
 ```
-npm create from-github padcom/vuelit-template
+npm create from-github padcom/vuelit-template hello-world
 ```
 
 The project is very simple but has everything that is needed to get you started.
