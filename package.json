@@ -1,0 +1,60 @@
+{
+  "name": "vuelit",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "./dist/vuelit.umd.cjs",
+  "module": "./dist/vuelit.js",
+  "types": "./dist/types.d.ts",
+  "exports": {
+    ".": {
+      "default": "./dist/vuelit.umd.cjs",
+      "import": "./dist/vuelit.js",
+      "types": "./dist/types.d.ts"
+    },
+    "./css.d.ts": "./css.d.ts"
+  },
+  "files": [
+    "README.md",
+    "dist",
+    "./css.d.ts"
+  ],
+  "scripts": {
+    "start": "vite",
+    "dev": "vite build -w",
+    "build": "vite build",
+    "clean": "rimraf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prebublishOnly": "npm install && npm run build && npm test"
+  },
+  "keywords": ["vue", "lit", "webcomponents"],
+  "author": "Matthias Hryniszak <padcom@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@vue/reactivity": "^3.3.9",
+    "lit-html": "^3.1.0"
+  },
+  "devDependencies": {
+    "@padcom/eslint-config-typescript": "^0.6.0",
+    "autoprefixer": "^10.4.16",
+    "typescript": "~5.0.4",
+    "vite": "^5.0.2",
+    "vite-plugin-dts": "^3.6.3",
+    "vite-plugin-eslint": "^1.8.1",
+    "vitest": "^0.34.6"
+  },
+  "eslintConfig": {
+    "extends": "@padcom/eslint-config-typescript",
+    "rules": {
+      "@typescript-eslint/no-this-alias": 0,
+      "no-underscore-dangle": 0,
+      "padding-line-between-statements": 0,
+      "max-lines-per-function": 0,
+      "@typescript-eslint/ban-types": 0,
+      "no-unused-expressions": 0,
+      "promise/prefer-await-to-callbacks": 0,
+      "complexity": 0
+    }
+  }
+}
