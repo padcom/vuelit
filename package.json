@@ -1,7 +1,10 @@
 {
   "name": "vuelit",
   "version": "0.0.1",
-  "description": "",
+  "description": "List vie Vue's reactivity system",
+  "author": "Matthias Hryniszak <padcom@gmail.com>",
+  "license": "Apache-2.0",
+  "keywords": ["vue", "lit", "webcomponents"],
   "type": "module",
   "main": "./dist/vuelit.umd.cjs",
   "module": "./dist/vuelit.js",
@@ -28,9 +31,17 @@
     "test:watch": "vitest",
     "prebublishOnly": "npm install && npm run build && npm test"
   },
-  "keywords": ["vue", "lit", "webcomponents"],
-  "author": "Matthias Hryniszak <padcom@gmail.com>",
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/padcom/vuelit"
+  },
+  "bugs": {
+    "url": "https://github.com/padcom/vuelit/issues"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/padcom"
+  },
   "dependencies": {
     "@vue/reactivity": "^3.3.9",
     "lit-html": "^3.1.0"
