@@ -101,7 +101,7 @@ Provides a value for injection using `inject()`. Please note `key` needs to be a
 
 Please note that both the component instance, that you can access by destructuring it from the first parameter of your composition function as well as a standalone function exported from the library expose this function. This means that in runtime, if you're using Vuelit, you can also dynamically provide values for later injections.
 
-### `[instance]`.inject<T>(key: Symbol, defaultValue: T): T | null`
+### `[instance]`.inject\<T\>(key: Symbol, defaultValue: T): T | null`
 
 Injects a value provided using `inject()`. Please note `key` needs to be a `Symbol` because the underlying mechanism storing the provided values is a `WeakMap`.
 
