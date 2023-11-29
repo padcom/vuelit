@@ -19,6 +19,20 @@ export interface VuelitComponent extends HTMLElement {
    * Register a callback for component lifecycle
    */
   registerLifecycleCallback: (method: LifecycleMethod, callback: LifecycleCallback) => void
+  /**
+   * Provide a value to children
+   *
+   * @param key key to reference the value in `inject()`
+   * @param value the provided value
+   */
+  provide(key: Symbol, value: any): void
+  /**
+   * Inject a value provided by `provide()`
+   *
+   * @param key key to reference the value provided by `provide()`
+   * @returns value if it has been provided or null
+   */
+  inject<T>(key: Symbol): T | null
 }
 
 type RenderFunction = () => TemplateResult
@@ -30,12 +44,12 @@ interface FactoryFunctionParams<Props> {
 
 type FactoryFunction<Props> = (this: VuelitComponent, context: FactoryFunctionParams<Props>) => RenderFunction
 
-let currentInstance: VuelitComponent | null
-
 interface Options {
   shadowRoot?: boolean
   styles?: string
 }
+
+let currentInstance: VuelitComponent | null
 
 export function defineComponent(name: string, options: Options, factory: Function): void
 export function defineComponent<Props>(name: string, options: Options, propDefs: Props, factory: FactoryFunction<Props>): void
@@ -71,10 +85,12 @@ export function defineComponent<Props>(
         onUnmounted: [] as LifecycleCallback[],
       }
 
+      #context = new WeakMap<Symbol, any>()
+
       constructor() {
         super()
 
-        this.#createProps()
+        this.#initProps()
         const template = this.#initTemplate()
 
         this.#callbacks.onBeforeMount.forEach(cb => cb.call(this, { component: this }))
@@ -97,7 +113,7 @@ export function defineComponent<Props>(
         })
       }
 
-      #createProps() {
+      #initProps() {
         Object.keys(propDefs as object).forEach(prop => {
           Object.defineProperty(this, prop, {
             get() {
@@ -152,6 +168,31 @@ export function defineComponent<Props>(
       registerLifecycleCallback(method: LifecycleMethod, callback: LifecycleCallback) {
         this.#callbacks[method].push(callback)
       }
+
+      provide(key: Symbol, value: any) {
+        this.#context.set(key, value)
+      }
+
+      inject<T>(key: Symbol): T | null {
+        if (this.#context.has(key)) {
+          return this.#context.get(key)
+        }
+
+        function get(element: Node | null): T | null {
+          if (!element) {
+            return null
+          }
+
+          const injector = element as any
+          if (injector.inject) {
+            return injector.inject(key)
+          } else {
+            return get(element.parentNode)
+          }
+        }
+
+        return get(this.parentNode)
+      }
     },
   )
 }
@@ -159,21 +200,6 @@ export function defineComponent<Props>(
 function createLifecycleMethod(name: LifecycleMethod) {
   return (callback: LifecycleCallback) => {
     currentInstance?.registerLifecycleCallback(name, callback)
-  }
-}
-
-/**
- * This function understands that the given reference could be reactive
- * and if that is the case it will assign it's `value` to the event
- * target's value (much like Vue's v-model does)
- */
-export function update(reference: MaybeRef) {
-  return (e: InputEvent) => {
-    if (isRef(reference)) {
-      reference.value = (e.target as HTMLInputElement).value
-    } else {
-      console.warn('A non-reactive reference was passed - not updating')
-    }
   }
 }
 
@@ -201,6 +227,44 @@ export const onUpdated = createLifecycleMethod('onUpdated')
  * Register a callback that is executed after the component has been unmounted from the DOM
  */
 export const onUnmounted = createLifecycleMethod('onUnmounted')
+
+/**
+ * This function understands that the given reference could be reactive
+ * and if that is the case it will assign it's `value` to the event
+ * target's value (much like Vue's v-model does)
+ */
+export function update(reference: MaybeRef) {
+  return (e: InputEvent) => {
+    if (isRef(reference)) {
+      reference.value = (e.target as HTMLInputElement).value
+    } else {
+      console.warn('A non-reactive reference was passed - not updating')
+    }
+  }
+}
+
+/**
+ * Provide a value to children
+ *
+ * @param key key to reference the value in `inject()`
+ * @param value the provided value
+ */
+export function provide(key: Symbol, value: any) {
+  return currentInstance?.provide(key, value)
+}
+
+/**
+ * Inject a value provided by `provide()`
+ *
+ * @param key key to reference the value provided by `provide()`
+ * @returns value if it has been provided or null
+ */
+export function inject<T>(key: Symbol) {
+  const result = currentInstance?.inject<T>(key) || null
+  if (!result) console.warn('Injection key', key, 'not found!')
+
+  return result
+}
 
 export * from 'lit-html'
 export * from '@vue/reactivity'

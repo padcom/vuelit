@@ -2,7 +2,7 @@ import {
   defineComponent, html,
   ref, computed,
   onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onUnmounted,
-  update,
+  update, provide, inject,
 } from '.'
 
 import { unsafeStatic } from 'lit-html/static.js'
@@ -38,6 +38,8 @@ function useLifecycleCallbacks() {
   return { message }
 }
 
+const injectionKey = Symbol('message')
+
 // eslint-disable-next-line prefer-arrow-callback
 defineComponent('custom-panel', { shadowRoot: false, styles }, { title: '1', age: 42 }, ({ component, props }) => {
   // eslint-disable-next-line no-invalid-this
@@ -60,6 +62,10 @@ defineComponent('custom-panel', { shadowRoot: false, styles }, { title: '1', age
     },
   })
 
+  const msg3 = computed(() => `Header: ${msg2.value}`)
+
+  provide(injectionKey, msg3)
+
   return () => {
     console.log('Rendering custom-panel')
 
@@ -73,4 +79,10 @@ defineComponent('custom-panel', { shadowRoot: false, styles }, { title: '1', age
       </section>
     `
   }
+})
+
+defineComponent('example-consumer', {}, {}, () => {
+  const message = inject(injectionKey)
+
+  return () => html`<h1>${message}</h1>`
 })
