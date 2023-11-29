@@ -14,6 +14,7 @@ The main differences in this implementation are:
 - hidden state / clean(er) API
 - automatic dereferencing of Vue.js' `ref`
 - 2-way binding
+- `provide`/`inject`
 
 ## Getting started
 
