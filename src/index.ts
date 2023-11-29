@@ -30,9 +30,10 @@ export interface VuelitComponent extends HTMLElement {
    * Inject a value provided by `provide()`
    *
    * @param key key to reference the value provided by `provide()`
+   * @param defaultValue optional default value if the value has not been provided
    * @returns value if it has been provided or null
    */
-  inject<T>(key: Symbol): T | null
+  inject<T>(key: Symbol, defaultValue?: T): T | null
 }
 
 type RenderFunction = () => TemplateResult
@@ -173,14 +174,14 @@ export function defineComponent<Props>(
         this.#context.set(key, value)
       }
 
-      inject<T>(key: Symbol): T | null {
+      inject<T>(key: Symbol, defaultValue?: T): T | null {
         if (this.#context.has(key)) {
           return this.#context.get(key)
         }
 
         function get(element: Node | null): T | null {
           if (!element) {
-            return null
+            return defaultValue || null
           }
 
           const injector = element as any
@@ -259,9 +260,15 @@ export function provide(key: Symbol, value: any) {
  * @param key key to reference the value provided by `provide()`
  * @returns value if it has been provided or null
  */
-export function inject<T>(key: Symbol) {
+export function inject<T>(key: Symbol, defaultValue?: T) {
   const result = currentInstance?.inject<T>(key) || null
-  if (!result) console.warn('Injection key', key, 'not found!')
+  if (!result) {
+    if (defaultValue === undefined) {
+      console.warn('Injection key', key, 'not found!')
+    } else {
+      return defaultValue
+    }
+  }
 
   return result
 }
