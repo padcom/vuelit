@@ -146,6 +146,17 @@ defineComponent('counter-display', {}, {}, () => {
 
 As you can see you can literally provide any value, including reactive refs. The `provide`/`inject` pair doesn't care.
 
+Alternatively you can use the component instance instead of the imported methods:
+
+```typescript
+defineComponent('counter-provider', {}, {}, ({ component }) => {
+  component.provide(counterSymbol, ref(0))
+  ...
+
+defineComponent('counter-display', {}, {}, ({ component }) => {
+  const counter = component.inject<Ref<number>>(counterSymbol)
+```
+
 ## Credits
 
 Big thank you to to Evan You and the entire Vue.js team.

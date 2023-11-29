@@ -89,16 +89,14 @@ defineComponent('example-consumer', {}, {}, () => {
 
 const counterSymbol = Symbol('counter')
 
-defineComponent('counter-provider', {}, {}, () => {
-  const counter = ref(0)
-
-  provide(counterSymbol, counter)
+defineComponent('counter-provider', {}, {}, ({ component }) => {
+  component.provide(counterSymbol, ref(0))
 
   return () => html``
 })
 
-defineComponent('counter-display', {}, {}, () => {
-  const counter = inject<Ref<number>>(counterSymbol)
+defineComponent('counter-display', {}, {}, ({ component }) => {
+  const counter = component.inject<Ref<number>>(counterSymbol)
 
   function increment() {
     if (counter) counter.value++
