@@ -89,6 +89,22 @@ defineComponent('hello-world', {}, {}, () => {
 })
 ```
 
+## Dependency injection
+
+Vue.js provides a dependency injection mechanism that's really useful for mitigating prop drilling. [Vue.js](https://vuejs.org/guide/components/provide-inject.html) does it using [provide](https://vuejs.org/api/options-composition.html#provide)/[inject](https://vuejs.org/api/options-composition.html#inject) composition functions.
+
+Vuelit is no different. It provides the same functionality using `provide()` and `inject()` composition functions:
+
+### `[instance]`.`provide(key: Symbol, value: any)`
+
+Provides a value for injection using `inject()`. Please note `key` needs to be a `Symbol` because the underlying mechanism storing the provided values is a `WeakMap`.
+
+Please note that both the component instance, that you can access by destructuring it from the first parameter of your composition function as well as a standalone function exported from the library. This means that in runtime, if you're using Vuelit, you can also dynamically provide values for later injections.
+
+### `[instance]`.inject<T>(key: Symbol, default: T): T | null`
+
+Injects a value provided using `inject()`. Please note `key` needs to be a `Symbol` because the underlying mechanism storing the provided values is a `WeakMap`.
+
 ## Credits
 
 Big thank you to to Evan You and the entire Vue.js team.
