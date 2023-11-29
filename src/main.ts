@@ -2,7 +2,7 @@ import {
   defineComponent, html,
   ref, computed,
   onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onUnmounted,
-  update, provide, inject,
+  update, provide, inject, Ref,
 } from '.'
 
 import { unsafeStatic } from 'lit-html/static.js'
@@ -85,4 +85,29 @@ defineComponent('example-consumer', {}, {}, () => {
   const message = inject(injectionKey)
 
   return () => html`<h1>${message}</h1>`
+})
+
+const counterSymbol = Symbol('counter')
+
+defineComponent('counter-provider', {}, {}, () => {
+  const counter = ref(0)
+
+  provide(counterSymbol, counter)
+
+  return () => html``
+})
+
+defineComponent('counter-display', {}, {}, () => {
+  const counter = inject<Ref<number>>(counterSymbol)
+
+  function increment() {
+    if (counter) counter.value++
+  }
+
+  return () => html`
+    <div>
+      <p>Current counter: ${counter}</p>
+      <button type="button" @click="${increment}">Increment</button>
+    </div>
+  `
 })

@@ -108,6 +108,44 @@ Injects a value provided using `inject()`. Please note `key` needs to be a `Symb
 
 Please note that both the component instance, that you can access by destructuring it from the first parameter of your composition function as well as a standalone function exported from the library expose this function. This means that in runtime, if you're using Vuelit, you can also dynamically retrieve values from providers.
 
+### Example
+
+Let's assume we have 2 components:
+
+- `<counter-provider>` that will provide a reactive counter
+- `<counter-display>` that will display and allow for manipulation of the counter
+
+This is how you would implement this:
+
+```typescript
+const counterSymbol = Symbol('counter')
+
+defineComponent('counter-provider', {}, {}, () => {
+  const counter = ref(0)
+
+  provide(counterSymbol, counter)
+
+  return () => html``
+})
+
+defineComponent('counter-display', {}, {}, () => {
+  const counter = inject<Ref<number>>(counterSymbol)
+
+  function increment() {
+    if (counter) counter.value++
+  }
+
+  return () => html`
+    <div>
+      <p>Current counter: ${counter}</p>
+      <button type="button" @click="${increment}">Increment</button>
+    </div>
+  `
+})
+```
+
+As you can see you can literally provide any value, including reactive refs. The `provide`/`inject` pair doesn't care.
+
 ## Credits
 
 Big thank you to to Evan You and the entire Vue.js team.
