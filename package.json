@@ -1,10 +1,14 @@
 {
   "name": "vuelit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "List vie Vue's reactivity system",
   "author": "Matthias Hryniszak <padcom@gmail.com>",
   "license": "Apache-2.0",
-  "keywords": ["vue", "lit", "webcomponents"],
+  "keywords": [
+    "vue",
+    "lit",
+    "webcomponents"
+  ],
   "type": "module",
   "main": "./dist/vuelit.umd.cjs",
   "module": "./dist/vuelit.js",
