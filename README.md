@@ -90,6 +90,38 @@ defineComponent('hello-world', {}, {}, () => {
 })
 ```
 
+## Lifecycle hooks
+
+Just like Vue.js, Vuelit exposes a number of lifecycle hooks:
+
+### `onBeforeMount(({ component }) => void)`
+
+This lifecycle hook is called after the setup function has completed but before the component is mounted to the DOM
+
+### `onMounted(({ component }) => void)`
+
+This lifecycle hook is called right after the component is mounted in the DOM
+
+### `onBeforeUpdate(({ component }) => void)`
+
+This lifecycle hook is called once a change in props is detected but before the internal state is updated
+
+### `onUpdated(({ component }) => void)`
+
+This lifecycle hook is called once a change in props is detected and after the internal state is updated
+
+### `onUnmounted(({ component }) => void)`
+
+This lifecycle hook is called after the component has been unmounted from the DOM
+
+## `getComponentInstance(): VuelitComponent` - getting component instance
+
+First things first: each Vuelit component is actually a valid DOM element. So if you will `console.log` it, it will be a DOM element.
+
+In many different places getting access to that instance might be very useful, for example to examine some props and/or attributes or to call a method on that given object.
+
+All lifecycle hooks are provided the `component` instance so you don't have to get it yourself. However, in composables that don't use the lifecycle hooks you still might want to access the `component` instance. For those rare cases there's the `getComponentInstance()` function exposed from Vuelit.
+
 ## Dependency injection
 
 Vue.js provides a dependency injection mechanism that's really useful for mitigating prop drilling. [Vue.js](https://vuejs.org/guide/components/provide-inject.html) does it using [provide](https://vuejs.org/api/options-composition.html#provide)/[inject](https://vuejs.org/api/options-composition.html#inject) composition functions.
