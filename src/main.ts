@@ -89,13 +89,17 @@ defineComponent('example-consumer', {}, {}, () => {
 
 const counterSymbol = Symbol('counter')
 
-defineComponent('counter-provider', {}, {}, ({ component }) => {
-  component.provide(counterSymbol, ref(0))
+defineComponent('counter-provider', { shadowRoot: true }, {}, ({ component }) => {
+  const counter = ref(0)
+  component.provide(counterSymbol, counter)
 
-  return () => html``
+  return () => html`
+    <div>Counter: ${counter}</div>
+    <slot></slot>
+  `
 })
 
-defineComponent('counter-display', {}, {}, ({ component }) => {
+defineComponent('counter-display', { shadowRoot: true }, {}, ({ component }) => {
   const counter = component.inject<Ref<number>>(counterSymbol)
 
   function increment() {
