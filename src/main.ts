@@ -1,6 +1,6 @@
 import {
   defineComponent, html,
-  ref, computed,
+  ref, computed, effect,
   onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onUnmounted,
   update, provide, inject, Ref, getCurrentInstance, expose,
 } from '.'
@@ -120,6 +120,10 @@ defineComponent('counter-component', { shadowRoot: true }, { value: 0 }, ({ prop
   function increment() {
     props.value++
   }
+
+  effect(() => {
+    console.log('Current counter value:', props.value)
+  })
 
   expose({ increment })
 
