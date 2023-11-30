@@ -52,6 +52,19 @@ interface Options {
 
 let currentInstance: VuelitComponent | null
 
+/**
+ * Returns the current component instance so that you can use it in composables
+ *
+ * @returns {VuelitComponent} component instance
+ */
+export function getCurrentInstance() {
+  if (!currentInstance) {
+    console.error('the getCurrentInstance() function can only be used inside of component setup')
+  }
+
+  return currentInstance
+}
+
 export function defineComponent(name: string, options: Options, factory: Function): void
 export function defineComponent<Props>(name: string, options: Options, propDefs: Props, factory: FactoryFunction<Props>): void
 

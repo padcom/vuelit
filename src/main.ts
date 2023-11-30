@@ -2,7 +2,7 @@ import {
   defineComponent, html,
   ref, computed,
   onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onUnmounted,
-  update, provide, inject, Ref,
+  update, provide, inject, Ref, getCurrentInstance,
 } from '.'
 
 import { unsafeStatic } from 'lit-html/static.js'
@@ -34,6 +34,8 @@ function useLifecycleCallbacks() {
   })
 
   const message = ref('Hello, world!')
+
+  console.log('Current instance:', getCurrentInstance())
 
   return { message }
 }
