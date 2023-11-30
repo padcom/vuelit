@@ -140,6 +140,34 @@ Injects a value provided using `inject()`. Please note `key` needs to be a `Symb
 
 Please note that both the component instance, that you can access by destructuring it from the first parameter of your composition function as well as a standalone function exported from the library expose this function. This means that in runtime, if you're using Vuelit, you can also dynamically retrieve values from providers.
 
+## Exposing additional properties and methods
+
+The `expose(things)` function is the ultimate weapon when it comes to defining additional APIs for your component.
+
+Assuming you'd like your `<counter-component>` to also have the `increment()` method:
+
+```typescript
+import { defineComponent, html, expose } from 'vuelit'
+
+defineComponent('counter-component', { shadowRoot: true }, { value: 0 }, ({ props }) => {
+  function increment() {
+    props.value++
+  }
+
+  expose({ increment })
+
+  return () => html`
+    <div>Current value: ${props.value}</div>
+  `
+})
+```
+
+Then later on in your code you can just access that method on the instance:
+
+```typescript
+document.querySelector('counter-component').increment()
+```
+
 ### Example
 
 Let's assume we have 2 components:

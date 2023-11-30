@@ -2,7 +2,7 @@ import {
   defineComponent, html,
   ref, computed,
   onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onUnmounted,
-  update, provide, inject, Ref, getCurrentInstance,
+  update, provide, inject, Ref, getCurrentInstance, expose,
 } from '.'
 
 import { unsafeStatic } from 'lit-html/static.js'
@@ -113,5 +113,17 @@ defineComponent('counter-display', { shadowRoot: true }, {}, ({ component }) => 
       <p>Current counter: ${counter}</p>
       <button type="button" @click="${increment}">Increment</button>
     </div>
+  `
+})
+
+defineComponent('counter-component', { shadowRoot: true }, { value: 0 }, ({ props }) => {
+  function increment() {
+    props.value++
+  }
+
+  expose({ increment })
+
+  return () => html`
+    <div>Current value: ${props.value}</div>
   `
 })

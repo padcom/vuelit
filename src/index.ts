@@ -31,7 +31,7 @@ export interface VuelitComponent extends HTMLElement {
    *
    * @param key key to reference the value provided by `provide()`
    * @param defaultValue optional default value if the value has not been provided
-   * @returns value if it has been provided or null
+   * @returns value if it has been provided, `defaultValue` if provided or `null`
    */
   inject<T>(key: Symbol, defaultValue?: T): T | null
 }
@@ -205,7 +205,17 @@ export function defineComponent<Props>(
           }
         }
 
-        return get(this.parentNode)
+        const result = get(this.parentNode)
+        if (!result) {
+          if (defaultValue === undefined) {
+            console.warn('Injection key', key, 'not found!')
+            return null
+          } else {
+            return defaultValue || null
+          }
+        } else {
+          return result
+        }
       }
     },
   )
@@ -264,7 +274,10 @@ export function update(reference: MaybeRef) {
  * @param value the provided value
  */
 export function provide(key: Symbol, value: any) {
-  return currentInstance?.provide(key, value)
+  const instance = getCurrentInstance()
+  if (instance) {
+    currentInstance?.provide(key, value)
+  }
 }
 
 /**
@@ -274,16 +287,40 @@ export function provide(key: Symbol, value: any) {
  * @returns value if it has been provided or null
  */
 export function inject<T>(key: Symbol, defaultValue?: T) {
-  const result = currentInstance?.inject<T>(key) || null
-  if (!result) {
-    if (defaultValue === undefined) {
-      console.warn('Injection key', key, 'not found!')
-    } else {
-      return defaultValue
-    }
+  const instance = getCurrentInstance()
+  if (instance) {
+    return instance.inject<T>(key)
+  } else {
+    return defaultValue
   }
+}
 
-  return result
+/**
+ * Define a _thing_ to be exposed from the current component.
+ * It's very useful to add methods to your components. This allows to create APIs that are
+ * similar to the  `dialog.open()` or `form.submit()`
+ *
+ * You can accomplish a similar thing by just assigning a field to your `component` like this:
+ *
+ * ```
+ * defineComponent('example-component', {}, {}, ({ component }) => {
+ *   component.something = 'here'
+ * })
+ * ```
+ *
+ * However this function works with `Object.defineProperty()` which allows for creation of
+ * readonly properties. That's very useful when adding methods. Plus the API is just nicer.
+ *
+ * @param things things to export
+ * @param options options when defining the thing
+ */
+export function expose(things: Record<string, any>, options: Omit<PropertyDescriptor, 'value' | 'get' | 'set'> = {}) {
+  const instance = getCurrentInstance()
+  if (instance) {
+    Object.entries(things).forEach(([name, value]) => {
+      Object.defineProperty(instance, name, { ...options, value })
+    })
+  }
 }
 
 export * from 'lit-html'
